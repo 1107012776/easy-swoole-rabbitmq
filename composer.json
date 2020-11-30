@@ -11,7 +11,7 @@
     ],
     "require": {
         "php-amqplib/php-amqplib": "^2.12",
-        "easyswoole/queue": "^2.0",
+        "easyswoole/queue": ">=2.0",
         "easyswoole/component": ">=2.0",
         "easyswoole/swoole-ide-helper": "^1.3"
     },
