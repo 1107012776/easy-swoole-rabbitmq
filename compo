@@ -1,0 +1,12 @@
+#!/bin/bash
+# author:lys
+
+pwd_dir=`pwd`
+#cd $pwd_dir
+su - www <<EOF
+cd $pwd_dir
+composer  $1  $2
+exit;
+EOF
+
+

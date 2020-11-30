@@ -1,0 +1,31 @@
+{
+    "name":"lys/easy-swoole-rabbitmq",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lys",
+            "email": "1107012776@qq.com",
+            "homepage": "https://github.com/1107012776",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php-amqplib/php-amqplib": "^2.12",
+        "easyswoole/queue": "^2.0",
+        "easyswoole/component": "^2.2",
+        "easyswoole/swoole-ide-helper": "^1.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "EasySwoole\\RabbitMq\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EasySwoole\\RabbitMq\\Test\\": "tests/"
+        }
+    }
+}
