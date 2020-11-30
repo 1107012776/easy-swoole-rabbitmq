@@ -18,21 +18,13 @@ use  EasySwoole\RabbitMq\MqQueue;
  */
 class ProductTest extends TestCase
 {
-    /*    public function testRun(){
-            var_dump(213123);
-            $stack = [];
-            $this->assertEquals(0, count($stack));
-            var_dump(new MqJob());
-        }*/
-
-
     /**
      * php vendor/bin/phpunit tests/ProductTest.php --filter testPush
      */
     public function testPush()
     {
 
-        $driver = new \EasySwoole\RabbitMq\RabbitMqQueueDriver('182.254.241.195', 5672, 'admin', 'admin', "/");
+        $driver = new \EasySwoole\RabbitMq\RabbitMqQueueDriver('127.0.0.1', 5672, 'test', 'test', "/");
         MqQueue::getInstance($driver);
         $job = new MqJob();
         $job->setJobData('hello word');
