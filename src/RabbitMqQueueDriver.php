@@ -114,7 +114,7 @@ class RabbitMqQueueDriver{
 
     /**
      * @param $callback
-     * @return \App\Utility\MqJob
+     * @return MqJob
      */
     public function consumerPop($callback)
     {
