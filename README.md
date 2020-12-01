@@ -7,7 +7,7 @@ composer require lys/easy-swoole-rabbitmq
 
 
 ### 示例:
-我们创建一个MqQueueProcess.php
+我们创建一个MqQueueProcess.php, 消费者进程
 ```php
 <?php
 
@@ -86,3 +86,21 @@ class EasySwooleEvent implements Event
     }
 }
   ```
+  生产者投递消息
+ ```php
+<?php
+ namespace App\Utility;
+ 
+ use EasySwoole\RabbitMq\MqQueue;
+ use EasySwoole\RabbitMq\MqJob;
+
+ class MqComposer{
+
+     public static function push(){
+         $job = new MqJob();
+         $job->setJobData('composer hello word'.date('Y-m-d H:i:s', time()));
+         MqQueue::getInstance()->producer()->setConfig('kd_sms_send_ex','hello')->push($job);
+     }
+ }
+ 
+ ```
