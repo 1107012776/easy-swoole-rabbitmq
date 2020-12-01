@@ -112,31 +112,6 @@ class RabbitMqQueueDriver{
     }
 
 
-    /**
-     * @param $callback
-     * @return \App\Utility\MqJob
-     */
-    public function pop($callback)
-    {
-        $job = $this->job;
-        $channel = $this->connection->channel();
-        $exchange = $job->getExchange(); //交换机名
-        $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
-        $channel->exchange_declare($exchange, 'direct', false, true, false); //声明初始化交换机
-        $channel->queue_declare($queueName, false, true, false, false);
-        $channel->queue_bind($queueName,$exchange,$routingKey);
-        $channel->basic_consume($queueName, '', false, true, false, false, $callback);
-        while(count($channel->callbacks)) {
-            try{
-                $channel->wait(null,false,10);
-                //        $channel->basic_consume('hello', '', false, true, false, false, $callback);
-            }catch (\Exception $e){
-                //        print_r($e->getTraceAsString());
-            }
-        }
-        return $job;
-    }
-
 
     /**
      * @param $callback

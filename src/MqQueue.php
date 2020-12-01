@@ -47,18 +47,6 @@ class MqQueue
         return new Consumer($this->driver);
     }
 
-    /**
-     * 消费者监听
-     * @param $callback
-     * @param $exchange
-     * @param $routingKey
-     */
-    function listen($callback, $exchange, $routingKey)
-    {
-        $job = new MqJob($exchange, $routingKey);
-        $this->driver->bind($job);
-        $this->driver->pop($callback);
-    }
 
     function size(): ?int
     {
