@@ -103,8 +103,8 @@ class RabbitMqQueueDriver{
     }
 
     /**
-     * @param \App\Utility\MqJob $job
-     * @return \App\Utility\MqJob
+     * @param MqJob $job
+     * @return MqJob
      */
     public function bind($job){
         return $this->job = $job;
