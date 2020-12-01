@@ -6,7 +6,6 @@ use PhpAmqpLib\Message\AMQPMessage;
 
 /**
  * Class RabbitMqQueueDriver
- * @package App\Utility
  */
 class RabbitMqQueueDriver{
     /**
@@ -14,7 +13,7 @@ class RabbitMqQueueDriver{
      */
     protected $connection;
     /**
-     * @var \App\Utility\MqJob $job
+     * @var MqJob $job
      */
     protected $job;
     protected $config = [];
@@ -63,7 +62,7 @@ class RabbitMqQueueDriver{
 
     /**
      * 生产发布信息
-     * @param \App\Utility\MqJob $job
+     * @param  MqJob $job
      * @return bool
      */
     public function push($job): bool
