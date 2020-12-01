@@ -154,9 +154,10 @@ class RabbitMqQueueDriver{
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
         $channel->exchange_declare($exchange, 'direct', false, true, false); //声明初始化交换机
         $channel->queue_declare($queueName, false, true, false, false);
-        $channel->basic_consume($queueName, '', false, true, false, false, function ($msg) use($job,$callback){
+        $channel->basic_consume($queueName, '', false, false, false, false, function ($msg) use($job,$callback){
             $job->setJobData($msg->body);
-            $callback($job);
+            $res = $callback($job);
+            $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);  //ack回应消息收到了
         });
         while(count($channel->callbacks)) {
             try{
