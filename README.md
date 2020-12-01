@@ -3,7 +3,7 @@
 
 
 ### 安装
-composer require lys/easy-swoole-rabbitmq=1.4
+composer require lys/easy-swoole-rabbitmq
 
 
 ### 示例:
