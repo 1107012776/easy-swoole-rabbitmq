@@ -3,7 +3,7 @@ namespace EasySwoole\RabbitMq;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-
+use Swoole\Coroutine;
 /**
  * Class RabbitMqQueueDriver
  */
