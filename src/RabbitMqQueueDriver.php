@@ -132,6 +132,7 @@ class RabbitMqQueueDriver{
             $job->setJobData($msg->body);
             $res = $callback($job);
             if($res === false){  //明确消息是失败直接reject
+                Coroutine::sleep(2);  //协程睡眠，以免频繁回滚出现消耗大量性能
                 $msg->delivery_info['channel']->basic_reject($msg->delivery_info['delivery_tag'], true); //回滚
                 return;
             }
