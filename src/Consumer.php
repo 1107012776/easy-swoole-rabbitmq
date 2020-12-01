@@ -10,7 +10,6 @@ use Swoole\Exception;
 class Consumer
 {
     private $driver;
-    private $enableListen = false;
     private $exchange = '';
     private $routingKey = '';
 
@@ -46,24 +45,11 @@ class Consumer
         if (empty($this->exchange) && empty($this->routingKey)) {
             throw new Exception('exchange and routingKey parameters cannot be null or empty');
         }
-        $this->enableListen = true;
-        $running = 0;
-        while ($this->enableListen) {
-            if ($running >= $maxCurrency) {
-                Coroutine::sleep($breakTime);
-                continue;
-            }
-            Coroutine::create(function () use (&$running, $call) {
-                $running++;
-                $job = $this->driver->consumerPop($call);
-            });
-            Coroutine::sleep($breakTime);
-        }
+        $job = $this->driver->consumerPop($call);  //这边本身自己会挂起
     }
 
     function stopListen(): Consumer
     {
-        $this->enableListen = false;
         return $this;
     }
 }
