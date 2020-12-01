@@ -131,6 +131,10 @@ class RabbitMqQueueDriver{
         $channel->basic_consume($queueName, '', false, false, false, false, function ($msg) use($job,$callback){
             $job->setJobData($msg->body);
             $res = $callback($job);
+            if($res === false){  //明确消息是失败直接reject
+                $msg->delivery_info['channel']->basic_reject($msg->delivery_info['delivery_tag']); //回滚
+                return;
+            }
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);  //ack回应消息收到了
         });
         while(count($channel->callbacks)) {
