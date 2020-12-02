@@ -10,8 +10,10 @@ use Swoole\Exception;
 class Consumer
 {
     private $driver;
-    private $exchange = '';
-    private $routingKey = '';
+    /**
+     * @var MqJob $job
+     */
+    private $job;
 
     function __construct(RabbitMqQueueDriver $driver)
     {
@@ -26,10 +28,7 @@ class Consumer
      */
     public function setConfig($exchange, $routingKey)
     {
-        $this->exchange = $exchange;
-        $this->routingKey = $routingKey;
-        $job = new MqJob($exchange, $routingKey);
-        $this->driver->bind($job);
+        $this->job = new MqJob($exchange, $routingKey);
         return $this;
     }
 
@@ -42,10 +41,10 @@ class Consumer
      */
     function listen(callable $call, float $breakTime = 0.01, float $waitTime = 0.1, int $maxCurrency = 128)
     {
-        if (empty($this->exchange) && empty($this->routingKey)) {
+        if (empty($this->job->getExchange()) && empty($this->job->getRoutingKey())) {
             throw new Exception('exchange and routingKey parameters cannot be null or empty');
         }
-        $job = $this->driver->consumerPop($call);  //这边本身自己会挂起
+        $job = $this->driver->consumerPop($call,$this->job);  //这边本身自己会挂起
     }
 
     function stopListen(): Consumer

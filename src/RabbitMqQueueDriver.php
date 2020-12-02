@@ -12,10 +12,6 @@ class RabbitMqQueueDriver{
      * @var AMQPStreamConnection
      */
     protected $connection;
-    /**
-     * @var MqJob $job
-     */
-    protected $job;
     protected $config = [];
     public function __construct($host,$port,$user,$password,$vhost = '/',$insist = false,
                                 $login_method = 'AMQPLAIN',
@@ -102,27 +98,18 @@ class RabbitMqQueueDriver{
         return $isOk;
     }
 
-    /**
-     * @param MqJob $job
-     * @return MqJob
-     */
-    public function bind($job){
-        return $this->job = $job;
-    }
-
 
 
     /**
      * @param $callback
      * @return MqJob
      */
-    public function consumerPop($callback)
+    public function consumerPop($callback,MqJob $job)
     {
 //       $callback = function($msg)
 //       {
 //            echo " [x] Received ", $msg->body, "\n";
 //       };
-        $job = $this->job;
         $channel = $this->connection->channel();
         $exchange = $job->getExchange(); //交换机名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
