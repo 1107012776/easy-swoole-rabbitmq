@@ -26,7 +26,7 @@ class MqQueueProcess extends AbstractProcess
     {
         go(function () {
             $MqQueue = MqQueue::getInstance()->refreshConnect();
-            $MqQueue->consumer()->setConfig('kd_sms_send_ex','hello', $mqType = 'direct', $queueName = '')->listen(function(MqJob $obj) {
+            $MqQueue->consumer()->setConfig('kd_sms_send_ex','hello', $mqType = 'direct', $queueName = 'hello')->listen(function(MqJob $obj) {
                 echo " [x] Received ", $obj->getJobData(), "\n";
                 Logger::getInstance()->log('log level info' . var_export($obj->getJobData(), true), Logger::LOG_LEVEL_INFO, 'DEBUG');//记录info级别日志//例子后面2个参数默认值
                 var_dump($obj->getJobData(),'MqQueueProcess');
@@ -101,7 +101,7 @@ class EasySwooleEvent implements Event
      public static function push(){
          $job = new MqJob();
          $job->setJobData('composer hello word'.date('Y-m-d H:i:s', time()));
-         MqQueue::getInstance()->producer()->setConfig('kd_sms_send_ex','hello',$mqType = 'direct', $queueName = '')->push($job);
+         MqQueue::getInstance()->producer()->setConfig('kd_sms_send_ex','hello',$mqType = 'direct', $queueName = 'hello')->push($job);
      }
  }
  
