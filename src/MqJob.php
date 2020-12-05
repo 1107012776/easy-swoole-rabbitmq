@@ -6,9 +6,9 @@ use EasySwoole\Queue\Job;
 
 class MqJob extends Job
 {
-    protected $exchange = '';  //交换机名称
+    protected $exchange = '';  //交换器名称
     protected $routingKey = '';  //路由和绑定队列名称
-    protected $mqType = 'direct';  //交换机类型
+    protected $mqType = 'direct';  //交换器类型
 
     public function __construct($exchange = '', $routingKey = '', $mqType = 'direct')
     {
