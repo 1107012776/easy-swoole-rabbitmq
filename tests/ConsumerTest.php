@@ -28,7 +28,7 @@ class ConsumerTest extends TestCase
         go(function () {
             $driver = new \EasySwoole\RabbitMq\RabbitMqQueueDriver('127.0.0.1', 5672, 'test', 'test', "/");
             MqQueue::getInstance($driver);
-            MqQueue::getInstance()->consumer()->setConfig('kd_sms_send_ex', 'hello')->listen(function (MqJob $job) {
+            MqQueue::getInstance()->consumer()->setConfig('kd_sms_send_ex', 'hello', 'direct')->listen(function (MqJob $job) {
                 var_dump($job->getJobData());
             });
         });
