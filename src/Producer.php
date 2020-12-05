@@ -13,6 +13,7 @@ class Producer
     private $nodeId;
     private $exchange = '';
     private $routingKey = '';
+    private $mqType = 'direct';
     private $writeExchange = false;
 
     function __construct(RabbitMqQueueDriver $driver, Long $atomic, ?string $nodeId = null)
@@ -25,13 +26,15 @@ class Producer
     /**
      * 初始化监听队列名
      * @param $exchange //交换机名称
-     * @param $routingKey
+     * @param $routingKey  //绑定路由和队列名称
+     * @param $mqType  //交换机类型
      * @return $this
      */
-    public function setConfig($exchange, $routingKey)
+    public function setConfig($exchange, $routingKey ,$mqType = 'direct')
     {
         $this->exchange = $exchange;
         $this->routingKey = $routingKey;
+        $this->mqType = $mqType;
         $this->writeExchange = true;
         return $this;
     }
@@ -41,6 +44,7 @@ class Producer
         if ($this->writeExchange) {
             $job->setExchange($this->exchange);
             $job->setRoutingKey($this->routingKey);
+            $job->setMqType($this->mqType);
             $this->writeExchange = false;
         }
         $id = $this->atomic->add(1);
