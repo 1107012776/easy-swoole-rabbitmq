@@ -46,7 +46,7 @@ class ConsumerTest extends TestCase
     {
         go(function () {
             MqQueue::getInstance($this->driver);
-            MqQueue::getInstance()->consumer()->setConfig('test_topic_ex', 'com.topic_hello','topic','topic_hello')->listen(function (MqJob $job) {
+            MqQueue::getInstance()->consumer()->setConfig('test_topic_ex', 'com.#','topic','topic_hello')->listen(function (MqJob $job) {
                 var_dump($job->getJobData());
             });
         });
