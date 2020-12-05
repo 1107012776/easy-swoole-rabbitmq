@@ -76,6 +76,9 @@ class RabbitMqQueueDriver{
         }
         $exchange = $job->getExchange(); //交换器名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
+        if(!empty($job->getQueueName())){
+            $queueName = $job->getQueueName();
+        }
         $channel->exchange_declare($exchange, $job->getMqType(), false, true, false); //声明初始化交换器
         $channel->queue_declare($queueName, false, true, false, false);
         $channel->queue_bind($queueName,$exchange,$routingKey);
@@ -113,6 +116,9 @@ class RabbitMqQueueDriver{
         $channel = $this->connection->channel();
         $exchange = $job->getExchange(); //交换器名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
+        if(!empty($job->getQueueName())){
+            $queueName = $job->getQueueName();
+        }
         $channel->exchange_declare($exchange, $job->getMqType(), false, true, false); //声明初始化交换器
         $channel->queue_declare($queueName, false, true, false, false);
         $channel->queue_bind($queueName,$exchange,$routingKey);

@@ -14,6 +14,7 @@ class Producer
     private $exchange = '';
     private $routingKey = '';
     private $mqType = 'direct';
+    private $queueName = '';
     private $writeExchange = false;
 
     function __construct(RabbitMqQueueDriver $driver, Long $atomic, ?string $nodeId = null)
@@ -28,13 +29,15 @@ class Producer
      * @param $exchange //交换器名称
      * @param $routingKey  //绑定路由和队列名称
      * @param $mqType  //交换器类型
+     * @param $queueName  //队列名称
      * @return $this
      */
-    public function setConfig($exchange, $routingKey ,$mqType = 'direct')
+    public function setConfig($exchange, $routingKey ,$mqType = 'direct' ,$queueName = '')
     {
         $this->exchange = $exchange;
         $this->routingKey = $routingKey;
         $this->mqType = $mqType;
+        $this->queueName = $queueName;
         $this->writeExchange = true;
         return $this;
     }
@@ -45,6 +48,7 @@ class Producer
             $job->setExchange($this->exchange);
             $job->setRoutingKey($this->routingKey);
             $job->setMqType($this->mqType);
+            $job->setQueueName($this->queueName);
             $this->writeExchange = false;
         }
         $id = $this->atomic->add(1);

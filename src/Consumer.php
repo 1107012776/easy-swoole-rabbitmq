@@ -27,9 +27,9 @@ class Consumer
      * @param $mqType  //交换器类型
      * @return $this
      */
-    public function setConfig($exchange, $routingKey, $mqType = 'direct')
+    public function setConfig($exchange, $routingKey, $mqType = 'direct', $queueName = '')
     {
-        $this->job = new MqJob($exchange, $routingKey, $mqType);
+        $this->job = new MqJob($exchange, $routingKey, $mqType, $queueName);
         return $this;
     }
 
