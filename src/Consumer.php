@@ -22,13 +22,14 @@ class Consumer
 
     /**
      * 初始化监听队列名
-     * @param $exchange //交换机名称
-     * @param $routingKey
+     * @param $exchange //交换器名称
+     * @param $routingKey  //路由和绑定队列名称
+     * @param $mqType  //交换器类型
      * @return $this
      */
-    public function setConfig($exchange, $routingKey)
+    public function setConfig($exchange, $routingKey, $mqType = 'direct', $queueName = '')
     {
-        $this->job = new MqJob($exchange, $routingKey);
+        $this->job = new MqJob($exchange, $routingKey, $mqType, $queueName);
         return $this;
     }
 
