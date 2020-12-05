@@ -53,4 +53,32 @@ class ConsumerTest extends TestCase
     }
 
 
+    /**
+     * php vendor/bin/phpunit tests/ConsumerTest.php --filter testFanoutListen
+     * @throws
+     */
+    public function testFanoutListen()
+    {
+        go(function () {
+            MqQueue::getInstance($this->driver);
+            MqQueue::getInstance()->consumer()->setConfig('test_fanout_ex', 'fanout_hello','fanout','fanout_hello')->listen(function (MqJob $job) {
+                var_dump($job->getJobData());
+            });
+        });
+    }
+
+    /**
+     * php vendor/bin/phpunit tests/ConsumerTest.php --filter testFanout1Listen
+     * @throws
+     */
+    public function testFanout1Listen()
+    {
+        go(function () {
+            MqQueue::getInstance($this->driver);
+            MqQueue::getInstance()->consumer()->setConfig('test_fanout_ex', 'fanout_hello','fanout','fanout_hello1')->listen(function (MqJob $job) {
+                var_dump($job->getJobData());
+            });
+        });
+    }
+
 }
