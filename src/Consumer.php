@@ -9,11 +9,11 @@ use Swoole\Exception;
 
 class Consumer
 {
-    private $driver;
+    protected $driver;
     /**
      * @var MqJob $job
      */
-    private $job;
+    protected $job;
 
     function __construct(RabbitMqQueueDriver $driver)
     {
@@ -27,9 +27,9 @@ class Consumer
      * @param $mqType  //交换器类型
      * @return $this
      */
-    public function setConfig($exchange, $routingKey, $mqType = 'direct', $queueName = '')
+    public function setConfig($exchange, $routingKey, $mqType = 'direct', $queueName = '', $mqTable = [])
     {
-        $this->job = new MqJob($exchange, $routingKey, $mqType, $queueName);
+        $this->job = new MqJob($exchange, $routingKey, $mqType, $queueName, $mqTable);
         return $this;
     }
 

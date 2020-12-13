@@ -10,13 +10,15 @@ class MqJob extends Job
     protected $routingKey = '';  //路由和绑定队列名称
     protected $mqType = 'direct';  //交换器类型
     protected $queueName = '';  //队列名称
+    protected $mqTable = [];  //headers  模式键值对
 
-    public function __construct($exchange = '', $routingKey = '', $mqType = 'direct', $queueName = '')
+    public function __construct($exchange = '', $routingKey = '', $mqType = 'direct', $queueName = '', $mqTable = [])
     {
         $this->exchange = $exchange;
         $this->routingKey = $routingKey;
         $this->mqType = $mqType;
         $this->queueName = $queueName;
+        $this->mqTable = $mqTable;
     }
 
 
@@ -40,6 +42,11 @@ class MqJob extends Job
         return $this->queueName = $queueName;
     }
 
+    public function setMqTable($mqTable)
+    {
+        return $this->mqTable = $mqTable;
+    }
+
 
     public function getExchange()
     {
@@ -59,5 +66,10 @@ class MqJob extends Job
     public function getQueueName()
     {
         return $this->queueName;
+    }
+
+    public function getMqTable()
+    {
+        return $this->mqTable;
     }
 }

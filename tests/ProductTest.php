@@ -52,4 +52,18 @@ class ProductTest extends TestCase
     }
 
 
+    /**
+     * php vendor/bin/phpunit tests/ProductTest.php --filter testFanoutPush
+     */
+    public function testFanoutPush()
+    {
+
+        MqQueue::getInstance($this->driver);
+        $job = new MqJob();
+        $job->setJobData('hello word');
+        $res = MqQueue::getInstance()->producer()->setConfig('test_fanout_ex', 'fanout_hello','fanout','fanout_hello')->push($job);
+        $this->assertEquals(true, !empty($res));
+
+    }
+
 }

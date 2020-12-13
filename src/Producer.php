@@ -8,14 +8,15 @@ use Swoole\Atomic\Long;
 
 class Producer
 {
-    private $atomic;
-    private $driver;
-    private $nodeId;
-    private $exchange = '';
-    private $routingKey = '';
-    private $mqType = 'direct';
-    private $queueName = '';
-    private $writeExchange = false;
+    protected $atomic;
+    protected $driver;
+    protected $nodeId;
+    protected $exchange = '';
+    protected $routingKey = '';
+    protected $mqType = 'direct';
+    protected $queueName = '';
+    protected $mqTable = [];  //headers  模式键值对
+    protected $writeExchange = false;
 
     function __construct(RabbitMqQueueDriver $driver, Long $atomic, ?string $nodeId = null)
     {
@@ -30,14 +31,16 @@ class Producer
      * @param $routingKey  //绑定路由和队列名称
      * @param $mqType  //交换器类型
      * @param $queueName  //队列名称
+     * @param $mqTable  //headers模式键值对
      * @return $this
      */
-    public function setConfig($exchange, $routingKey ,$mqType = 'direct' ,$queueName = '')
+    public function setConfig($exchange, $routingKey ,$mqType = 'direct' ,$queueName = '', $mqTable = [])
     {
         $this->exchange = $exchange;
         $this->routingKey = $routingKey;
         $this->mqType = $mqType;
         $this->queueName = $queueName;
+        $this->mqTable = $mqTable;
         $this->writeExchange = true;
         return $this;
     }
@@ -49,6 +52,7 @@ class Producer
             $job->setRoutingKey($this->routingKey);
             $job->setMqType($this->mqType);
             $job->setQueueName($this->queueName);
+            $job->setMqTable($this->mqTable);
             $this->writeExchange = false;
         }
         $id = $this->atomic->add(1);
