@@ -87,6 +87,9 @@ class RabbitMqQueueDriver
         if (!empty($job->getQueueName())) {
             $queueName = $job->getQueueName();
         }
+        if ($job->getMqType() == AMQPExchangeType::HEADERS) {
+            $routingKey = '';  //headers不需要路由
+        }
         $channel->exchange_declare($exchange, $job->getMqType(), false, true, false); //声明初始化交换器
         $channel->queue_declare($queueName, false, true, false, false);
         $channel->queue_bind($queueName, $exchange, $routingKey);
@@ -134,7 +137,7 @@ class RabbitMqQueueDriver
         $channel->queue_declare($queueName, false, true, false, false);
         if ($job->getMqType() == AMQPExchangeType::HEADERS) {
             $headers = new AMQPTable($job->getMqTable());
-            $channel->queue_bind($queueName, $exchange, $routingKey, false, $headers);
+            $channel->queue_bind($queueName, $exchange, '', false, $headers);  //headers不需要路由
         } else {
             $channel->queue_bind($queueName, $exchange, $routingKey);
         }
