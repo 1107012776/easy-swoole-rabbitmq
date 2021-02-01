@@ -30,6 +30,7 @@ class MqQueueProcess extends AbstractProcess
                 echo " [x] Received ", $obj->getJobData(), "\n";
                 Logger::getInstance()->log('log level info' . var_export($obj->getJobData(), true), Logger::LOG_LEVEL_INFO, 'DEBUG');//记录info级别日志//例子后面2个参数默认值
                 var_dump($obj->getJobData(),'MqQueueProcess');
+                //return false;  //return false消息回滚,所以请注意，不要随意使用return false
             });
         });
     }
@@ -101,11 +102,16 @@ class EasySwooleEvent implements Event
      public static function push(){
          $job = new MqJob();
          $job->setJobData('composer hello word'.date('Y-m-d H:i:s', time()));
-         MqQueue::getInstance()->producer()->setConfig($exchange = 'kd_sms_send_ex',$routingKey = 'hello',$mqType = 'direct', $queueName = 'hello')->push($job);
+         $res = MqQueue::getInstance()->producer()->setConfig($exchange = 'kd_sms_send_ex',$routingKey = 'hello',$mqType = 'direct', $queueName = 'hello')->push($job);
+         if($res){
+              var_dump('发布成功');
+         }else{
+              var_dump('发布失败');
+         }  
      }
  }
  
  ```
  
  ### 更多请关注本人的博客
- https://www.developzhe.com
+ https://www.developzhe.com/single200.html
