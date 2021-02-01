@@ -30,6 +30,9 @@ class MqQueueProcess extends AbstractProcess
                 echo " [x] Received ", $obj->getJobData(), "\n";
                 Logger::getInstance()->log('log level info' . var_export($obj->getJobData(), true), Logger::LOG_LEVEL_INFO, 'DEBUG');//记录info级别日志//例子后面2个参数默认值
                 var_dump($obj->getJobData(),'MqQueueProcess');
+                //return;   //使用return 终止执行下面的代码
+                //return true;   //使用return true终止执行下面的代码
+                echo 11111;
                 //return false;  //return false消息回滚,所以请注意，不要随意使用return false
             });
         });
