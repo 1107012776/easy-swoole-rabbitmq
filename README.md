@@ -37,7 +37,7 @@ class MqQueueProcess extends AbstractProcess
                     //return false;  //return false消息回滚,所以请注意，不要随意使用return false
                 });             
             }catch (\Exception $e){
-                var_dump($e->getMessage());  //捕获的异常消息，这边可能是 $channel->wait(null, false, 10); 那边抛出的
+                var_dump($e->getMessage()); 
             }
         });
     }
