@@ -27,12 +27,12 @@ class Producer
     /**
      * 初始化监听队列名
      * @param $exchange //交换器名称
-     * @param $routingKey  //绑定路由和队列名称
-     * @param $mqType  //交换器类型
-     * @param $queueName  //队列名称
+     * @param $routingKey //绑定路由和队列名称
+     * @param $mqType //交换器类型
+     * @param $queueName //队列名称
      * @return $this
      */
-    public function setConfig($exchange, $routingKey ,$mqType = 'direct' ,$queueName = '')
+    public function setConfig($exchange, $routingKey, $mqType = 'direct', $queueName = '')
     {
         $this->exchange = $exchange;
         $this->routingKey = $routingKey;
