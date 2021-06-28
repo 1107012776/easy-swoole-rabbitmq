@@ -139,7 +139,11 @@ class RabbitMqQueueDriver
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);  //ack回应消息收到了
         });
         while (count($channel->callbacks)) {
-            $channel->wait(null, false, 5);  //等待出现异常需要自行捕获，这边不做处理
+            try{
+                $channel->wait(null, false, 5);
+            }catch (\Exception $e){
+
+            }
             Coroutine::sleep(0.001);
         }
         return $job;
