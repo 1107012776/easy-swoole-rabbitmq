@@ -134,10 +134,11 @@ class RabbitMqQueueDriver{
         });
         while(count($channel->callbacks)) {
             try{
-                $channel->wait(null,false,10);
+                $channel->wait(null,false,5);
             }catch (\Exception $e){
 
             }
+            \co::sleep(0.001)
         }
         return $job;
     }
