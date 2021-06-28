@@ -1,19 +1,23 @@
 <?php
+
 namespace EasySwoole\RabbitMq;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 use Swoole\Coroutine;
+
 /**
  * Class RabbitMqQueueDriver
  */
-class RabbitMqQueueDriver{
+class RabbitMqQueueDriver
+{
     /**
      * @var AMQPStreamConnection
      */
     protected $connection;
     protected $config = [];
-    public function __construct($host,$port,$user,$password,$vhost = '/',$insist = false,
+
+    public function __construct($host, $port, $user, $password, $vhost = '/', $insist = false,
                                 $login_method = 'AMQPLAIN',
                                 $login_response = null,
                                 $locale = 'en_US',
@@ -24,9 +28,9 @@ class RabbitMqQueueDriver{
                                 $heartbeat = 60)
     {
         $this->config = [
-            $host, $port,$user, $password,$vhost,
-            $insist,$login_method,$login_response,$locale,$connection_timeout,$read_write_timeout,
-            $context,$keepalive,$heartbeat
+            $host, $port, $user, $password, $vhost,
+            $insist, $login_method, $login_response, $locale, $connection_timeout, $read_write_timeout,
+            $context, $keepalive, $heartbeat
         ];
         $this->connection();
     }
@@ -34,41 +38,43 @@ class RabbitMqQueueDriver{
     /**
      * 链接
      */
-    protected function connection(){
-        list($host, $port,$user, $password,$vhost,
-            $insist,$login_method,$login_response,$locale,$connection_timeout,$read_write_timeout,
-            $context,$keepalive,$heartbeat) = $this->config;
-        $this->connection = new AMQPStreamConnection($host, $port,$user, $password,$vhost,
-            $insist,$login_method,$login_response,$locale,$connection_timeout,$read_write_timeout,
-            $context,$keepalive,$heartbeat
+    protected function connection()
+    {
+        list($host, $port, $user, $password, $vhost,
+            $insist, $login_method, $login_response, $locale, $connection_timeout, $read_write_timeout,
+            $context, $keepalive, $heartbeat) = $this->config;
+        $this->connection = new AMQPStreamConnection($host, $port, $user, $password, $vhost,
+            $insist, $login_method, $login_response, $locale, $connection_timeout, $read_write_timeout,
+            $context, $keepalive, $heartbeat
         );
     }
 
     /**
      * 刷新链接
      */
-    public function refreshConnect(){
-        list($host, $port,$user, $password,$vhost,
-            $insist,$login_method,$login_response,$locale,$connection_timeout,$read_write_timeout,
-            $context,$keepalive,$heartbeat) = $this->config;
-        return new self($host, $port,$user, $password,$vhost,
-            $insist,$login_method,$login_response,$locale,$connection_timeout,$read_write_timeout,
-            $context,$keepalive,$heartbeat);
+    public function refreshConnect()
+    {
+        list($host, $port, $user, $password, $vhost,
+            $insist, $login_method, $login_response, $locale, $connection_timeout, $read_write_timeout,
+            $context, $keepalive, $heartbeat) = $this->config;
+        return new self($host, $port, $user, $password, $vhost,
+            $insist, $login_method, $login_response, $locale, $connection_timeout, $read_write_timeout,
+            $context, $keepalive, $heartbeat);
     }
 
     /**
      * 生产发布信息
-     * @param  MqJob $job
+     * @param MqJob $job
      * @return bool
      */
     public function push($job): bool
     {
-        try{
+        try {
             $channel = $this->connection->channel();
-        }catch (\Exception $e){
-            try{
+        } catch (\Exception $e) {
+            try {
                 $this->connection->close();
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
 
             }
             $this->connection();
@@ -76,23 +82,23 @@ class RabbitMqQueueDriver{
         }
         $exchange = $job->getExchange(); //交换器名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
-        if(!empty($job->getQueueName())){
+        if (!empty($job->getQueueName())) {
             $queueName = $job->getQueueName();
         }
         $channel->exchange_declare($exchange, $job->getMqType(), false, true, false); //声明初始化交换器
         $channel->queue_declare($queueName, false, true, false, false);
-        $channel->queue_bind($queueName,$exchange,$routingKey);
+        $channel->queue_bind($queueName, $exchange, $routingKey);
         $body = $job->getJobData();
         is_array($body) && $body = json_encode($body, JSON_UNESCAPED_UNICODE);
-        $msg = new AMQPMessage($body,[
+        $msg = new AMQPMessage($body, [
             'delivery_mode' => 2 // make message persistent 持久化消息
         ]);
         $channel->tx_select();  //事务声明
-        try{
+        try {
             $channel->basic_publish($msg, $exchange, $routingKey);
             $channel->tx_commit();
             $isOk = true;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $channel->tx_rollback();
             $isOk = false;
         } finally {
@@ -102,12 +108,12 @@ class RabbitMqQueueDriver{
     }
 
 
-
     /**
      * @param $callback
      * @return MqJob
+     * @throws
      */
-    public function consumerPop($callback,MqJob $job)
+    public function consumerPop($callback, MqJob $job)
     {
 //       $callback = function($msg)
 //       {
@@ -116,16 +122,16 @@ class RabbitMqQueueDriver{
         $channel = $this->connection->channel();
         $exchange = $job->getExchange(); //交换器名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
-        if(!empty($job->getQueueName())){
+        if (!empty($job->getQueueName())) {
             $queueName = $job->getQueueName();
         }
         $channel->exchange_declare($exchange, $job->getMqType(), false, true, false); //声明初始化交换器
         $channel->queue_declare($queueName, false, true, false, false);
-        $channel->queue_bind($queueName,$exchange,$routingKey);
-        $channel->basic_consume($queueName, '', false, false, false, false, function ($msg) use($job,$callback){
+        $channel->queue_bind($queueName, $exchange, $routingKey);
+        $channel->basic_consume($queueName, '', false, false, false, false, function ($msg) use ($job, $callback) {
             $job->setJobData($msg->body);
             $res = $callback($job);
-            if($res === false){  //明确消息是失败直接reject
+            if ($res === false) {  //明确消息是失败直接reject
                 Coroutine::sleep(2);  //协程睡眠，以免频繁回滚出现消耗大量性能
                 $msg->delivery_info['channel']->basic_reject($msg->delivery_info['delivery_tag'], true); //回滚
                 return;
@@ -133,12 +139,8 @@ class RabbitMqQueueDriver{
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);  //ack回应消息收到了
         });
         while(count($channel->callbacks)) {
-            try{
-                $channel->wait(null,false,5);
-            }catch (\Exception $e){
-
-            }
-            \co::sleep(0.001)
+            $channel->wait(null,false,5);  //等待出现异常需要自行捕获，这边不做处理
+            \co::sleep(0.001);
         }
         return $job;
     }
