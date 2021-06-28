@@ -140,7 +140,7 @@ class RabbitMqQueueDriver
         });
         while (count($channel->callbacks)) {
             $channel->wait(null, false, 5);  //等待出现异常需要自行捕获，这边不做处理
-            \co::sleep(0.001);
+            Coroutine::sleep(0.001);
         }
         return $job;
     }
