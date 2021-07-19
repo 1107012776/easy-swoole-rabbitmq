@@ -15,6 +15,11 @@ class Consumer
      */
     private $job;
 
+    /**
+     * @var callable  $moniterWaitErrorCallable
+     */
+    private $moniterWaitErrorCallable = null;   //错误监控函数针对 $channel->wait(null, false, $waitTime);
+
     function __construct(RabbitMqQueueDriver $driver)
     {
         $this->driver = $driver;
@@ -34,19 +39,29 @@ class Consumer
     }
 
     /**
+     * 设置错误监控函数针对 $channel->wait(null, false, $waitTime);
+     * @param callable $moniterWaitErrorCallable
+     * @return $this
+     */
+    function setMoniterWaitError(callable $moniterWaitErrorCallable){
+        $this->moniterWaitErrorCallable = $moniterWaitErrorCallable;
+        return $this;
+    }
+
+    /**
      * 监听
      * @param callable $call
-     * @param float $breakTime
-     * @param float $waitTime
-     * @param int $maxCurrency
+     * @param  $breakTime
+     * @param  $waitTime
+     * @param  $maxCurrency
      * @throws
      */
-    function listen(callable $call, float $breakTime = 0.01, float $waitTime = 0.1, int $maxCurrency = 128)
+    function listen(callable $call, $breakTime = 0.001, $waitTime = 5, int $maxCurrency = 128)
     {
         if (empty($this->job->getExchange()) && empty($this->job->getRoutingKey())) {
             throw new Exception('exchange and routingKey parameters cannot be null or empty');
         }
-        $job = $this->driver->consumerPop($call, $this->job);  //这边本身自己会挂起
+        $job = $this->driver->consumerPop($call, $this->job, $breakTime, $waitTime, $this->moniterWaitErrorCallable);  //这边本身自己会挂起
     }
 
     function stopListen(): Consumer
