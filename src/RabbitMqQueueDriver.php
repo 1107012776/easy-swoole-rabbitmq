@@ -4,7 +4,6 @@ namespace EasySwoole\RabbitMq;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
-use phpDocumentor\Reflection\Types\Callable_;
 use Swoole\Coroutine;
 
 /**
