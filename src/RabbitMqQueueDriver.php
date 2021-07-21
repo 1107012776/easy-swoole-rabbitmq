@@ -4,6 +4,7 @@ namespace EasySwoole\RabbitMq;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
+use phpDocumentor\Reflection\Types\Callable_;
 use Swoole\Coroutine;
 
 /**
@@ -110,15 +111,15 @@ class RabbitMqQueueDriver
 
     /**
      * @param $callback
-     * @return MqJob
+     * @param MqJob $job
+     * @param $breakTime
+     * @param $waitTime
+     * @param $moniterWaitErrorCallable
+     * @return mixed
      * @throws
      */
-    public function consumerPop($callback, MqJob $job)
+    public function consumerPop($callback, MqJob $job, $breakTime, $waitTime, callable $moniterWaitErrorCallable = null)
     {
-//       $callback = function($msg)
-//       {
-//            echo " [x] Received ", $msg->body, "\n";
-//       };
         $channel = $this->connection->channel();
         $exchange = $job->getExchange(); //交换器名
         $queueName = $routingKey = $job->getRoutingKey(); //路由关键字(也可以省略)
@@ -139,12 +140,12 @@ class RabbitMqQueueDriver
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);  //ack回应消息收到了
         });
         while (count($channel->callbacks)) {
-            try{
-                $channel->wait(null, false, 5);
-            }catch (\Exception $e){
-
+            try {
+                $channel->wait(null, false, $waitTime);
+            } catch (\Exception $e) {
+                !empty($moniterWaitErrorCallable) && $moniterWaitErrorCallable($e);
             }
-            Coroutine::sleep(0.001);
+            Coroutine::sleep($breakTime);
         }
         return $job;
     }
