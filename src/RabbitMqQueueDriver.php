@@ -63,6 +63,20 @@ class RabbitMqQueueDriver
     }
 
     /**
+     * 关闭链接
+     * @param callable|null $callback
+     * @return bool
+     */
+    public function closeConnection(callable $callback = null){
+        try {
+            $this->connection->close();
+        } catch (\Exception $e) {
+            !empty($callback) && $callback($e);
+        }
+        return true;
+    }
+
+    /**
      * 生产发布信息
      * @param MqJob $job
      * @return bool
