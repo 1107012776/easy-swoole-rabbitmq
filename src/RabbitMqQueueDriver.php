@@ -67,7 +67,8 @@ class RabbitMqQueueDriver
      * @param callable|null $callback
      * @return bool
      */
-    public function closeConnection(callable $callback = null){
+    public function closeConnection(callable $callback = null)
+    {
         try {
             $this->connection->close();
         } catch (\Exception $e) {
