@@ -73,6 +73,7 @@ class RabbitMqQueueDriver
             $this->connection->close();
         } catch (\Exception $e) {
             !empty($callback) && $callback($e);
+            return false;
         }
         return true;
     }
