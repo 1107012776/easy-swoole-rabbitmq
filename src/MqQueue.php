@@ -32,6 +32,16 @@ class MqQueue
         return new static($this->driver->refreshConnect());
     }
 
+    /**
+     * 主动关闭链接
+     * @param callable|null $callback  //关闭链接异常捕获回调函数
+     * @return bool
+     */
+    function closeConnection(callable $callback = null)
+    {
+       return $this->driver->closeConnection($callback);
+    }
+
     function queueDriver()
     {
         return $this->driver;
