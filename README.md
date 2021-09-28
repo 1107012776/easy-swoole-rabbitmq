@@ -110,7 +110,11 @@ class EasySwooleEvent implements Event
               var_dump('发布成功');
          }else{
               var_dump('发布失败');
-         }  
+         }
+         //主动关闭链接
+         /* MqQueue::getInstance()->closeConnection(function (\Exception $e){
+             //这边是主动关闭异常处理
+            });  */  
      }
  }
  
