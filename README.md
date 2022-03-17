@@ -1,5 +1,5 @@
 # easy-swoole-rabbitmq
-针对easyswoole框架封装的rabbitmq队列插件，基于php-amqplib/php-amqplib
+EasySwoole 框架的 RabbitMQ 队列插件，基于 php-amqplib/php-amqplib
 
 ### 支持的交换器类型
 已支持 direct topic fanout
